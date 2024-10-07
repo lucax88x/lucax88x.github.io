@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Everyday Front-End Visual Studio Code Extensions, Tips &amp; Tricks
+        
+    </title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/favicons/manifest.json">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#404040">
+    <link rel="shortcut icon" href="/favicons/favicon.ico">
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    
+    <link rel="canonical" href="https://lucax88x.github.io/2017/01/04/2017-01-04-visual-studio-code-extension-tips/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->    
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">lucatrazzi</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/docs/Luca-Trazzi.pdf">CV</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/banner.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#vscode" title="vscode">vscode</a>
+                        
+                          <a class="tag" href="/tags/#front-end" title="front-end">front-end</a>
+                        
+                          <a class="tag" href="/tags/#extensions" title="extensions">extensions</a>
+                        
+                          <a class="tag" href="/tags/#tips" title="tips">tips</a>
+                        
+                          <a class="tag" href="/tags/#tricks" title="tricks">tricks</a>
+                        
+                    </div>
+                    <h1>Everyday Front-End Visual Studio Code Extensions, Tips &amp; Tricks</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by <a target="_blank" rel="noopener" href="https://github.com/lucax88x/">Luca Trazzi</a> on
+                        2017-01-04
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container post-white">
+
+                <div class="post">
+                    <p>When Microsoft released <a target="_blank" rel="noopener" href="https://code.visualstudio.com/">Visual Studio Code</a>, I immediately switched to it because it was <em>blazingly fast</em>.</p>
+<p>However, it was missing <em>something</em>. <strong>Extensions</strong>.</p>
+<p>Finally Microsoft released the <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/">Marketplace</a>.</p>
+<p><img src="https://media.giphy.com/media/iwYA3U74jwa5O/giphy.gif"></p>
+<p>Since then, I am always researching for the best extensions, but often they’re hidden by the oldest ones. So if you have something to suggest, please comment down, and I will add it on this list!</p>
+<p>In the meanwhile, I suggest these amazing extensions that I use everyday!</p>
+<h1 id="Programming"><a href="#Programming" class="headerlink" title="Programming"></a>Programming</h1><ol>
+<li><h3 id="expand-region"><a href="#expand-region" class="headerlink" title="expand-region"></a>expand-region</h3><p> <img src="https://raw.githubusercontent.com/windwp/vscode-expand-region/master/image/javascript.gif"></p>
+<p> The original expand-shrink region feature of vs-code does not work very well, <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=letrieu.expand-region">this extension</a>, works very well and it’s really similar to the Resharper Expand-Shrink region feature with <em>ctrl+w</em> and <em>shift+ctrl+w</em></p>
+</li>
+<li><h3 id="Code-Ace-Jumper"><a href="#Code-Ace-Jumper" class="headerlink" title="Code Ace Jumper"></a>Code Ace Jumper</h3><p> <img src="https://media.giphy.com/media/l0HlFPNndZgxEHV6w/source.gif"></p>
+<p> I wasn’t able to find an ‘ace-jump’ extension on vscode, so I had to write it myself.<br> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=lucax88x.codeacejumper">This extension</a> tries to emulate the famous ‘ace-jump’ extension available on Emacs.<br> Trust me, once you try it you will never come back.</p>
+</li>
+</ol>
+<h1 id="Snippets"><a href="#Snippets" class="headerlink" title="Snippets"></a>Snippets</h1><ol>
+<li><h3 id="Angular-1-JavaScript-and-TypeScript-Snippets"><a href="#Angular-1-JavaScript-and-TypeScript-Snippets" class="headerlink" title="Angular 1 JavaScript and TypeScript Snippets"></a>Angular 1 JavaScript and TypeScript Snippets</h3><p> <img src="https://github.com/johnpapa/vscode-angular1-snippets/raw/master/images/use-extension.gif"></p>
+<p> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=johnpapa.Angular1">This extension</a> generate snippets that follow the <a target="_blank" rel="noopener" href="https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md">John Papa’s Angular 1 styleguide</a>, in fact the author of the extension is John Papa itself.</p>
+</li>
+<li><h3 id="Angular-2-JavaScript-and-TypeScript-Snippets"><a href="#Angular-2-JavaScript-and-TypeScript-Snippets" class="headerlink" title="Angular 2 JavaScript and TypeScript Snippets"></a>Angular 2 JavaScript and TypeScript Snippets</h3><p> <img src="https://github.com/johnpapa/vscode-angular2-snippets/raw/master/images/use-extension.gif"></p>
+<p> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=johnpapa.Angular2">This extension</a> is the same as the last one, but for Angular 2.</p>
+</li>
+</ol>
+<h1 id="Linters"><a href="#Linters" class="headerlink" title="Linters"></a>Linters</h1><ol>
+<li><h3 id="tslint"><a href="#tslint" class="headerlink" title="tslint"></a>tslint</h3><p> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=eg2.tslint">This extension</a> uses TSLint library for linting <em>typescript</em> files.</p>
+</li>
+<li><h3 id="jshint"><a href="#jshint" class="headerlink" title="jshint"></a>jshint</h3><p> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=dbaeumer.jshint">This extension</a> uses JSHint library for linting <em>javascript</em> files.</p>
+</li>
+<li><h3 id="beautify-css-sass-scss-less"><a href="#beautify-css-sass-scss-less" class="headerlink" title="beautify css/sass/scss/less"></a>beautify css/sass/scss/less</h3><p> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=michelemelluso.code-beautifier">This extension</a> beautifies <em>css/sass/scss/less</em> files on the fly.</p>
+</li>
+<li><h3 id="HTMLLint"><a href="#HTMLLint" class="headerlink" title="HTMLLint"></a>HTMLLint</h3><p> <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=mkaufman.HTMLHint">This extension</a> uses HTMLLint library for linting <em>html</em> files.</p>
+</li>
+</ol>
+<h1 id="Tips-amp-Tricks"><a href="#Tips-amp-Tricks" class="headerlink" title="Tips &amp; Tricks"></a>Tips &amp; Tricks</h1><ol>
+<li><h3 id="Official-Microsoft-vscode-Tips-and-tricks"><a href="#Official-Microsoft-vscode-Tips-and-tricks" class="headerlink" title="Official Microsoft vscode Tips and tricks"></a>Official Microsoft vscode Tips and tricks</h3><p> Full list of useful tips &amp; tricks can be found <a target="_blank" rel="noopener" href="https://github.com/Microsoft/vscode-tips-and-tricks">here</a></p>
+</li>
+<li><h3 id="Zen-Mode"><a href="#Zen-Mode" class="headerlink" title="Zen Mode"></a>Zen Mode</h3><p> On the <a target="_blank" rel="noopener" href="https://code.visualstudio.com/updates/v1_8">vscode release 1.8</a> Zen Mode was released. Just try it by pressing <em>ctrl+k z</em>.</p>
+</li>
+<li><h3 id="Icons"><a href="#Icons" class="headerlink" title="Icons"></a>Icons</h3><p> On the <a target="_blank" rel="noopener" href="https://code.visualstudio.com/updates/v1_5">vscode release 1.5</a> Icons theme was released. In order to enable it you can use <em>File &gt; Preferences</em> menu or the Command Palette <em>ctrl+shift+p</em> search for <em>File Icon Them</em>.</p>
+<p> <img src="https://code.visualstudio.com/images/2016_09_08_select-icon-theme.png"></p>
+<p> This will change your ugly vscode to this.</p>
+<p> <img src="https://code.visualstudio.com/images/2016_09_08_seti-icon-theme.png"></p>
+</li>
+<li><h3 id="Multi-cursor-selection"><a href="#Multi-cursor-selection" class="headerlink" title="Multi cursor selection"></a>Multi cursor selection</h3><p> <img src="https://raw.githubusercontent.com/Microsoft/vscode-tips-and-tricks/master/media/editingevolved_multicursor.gif"></p>
+<p> This shortcut comes handy when you need to modify multiple lines together.</p>
+<p> Mac: <em>opt+cmd+up</em> or <em>opt+cmd+down</em></p>
+<p> Windows: <em>ctrl+alt+up</em> or <em>ctrl+alt+down</em></p>
+<p> Linux: <em>alt+shift+up</em> or <em>alt+shift+down</em></p>
+</li>
+<li><h3 id="Cheat-Sheet"><a href="#Cheat-Sheet" class="headerlink" title="Cheat Sheet"></a>Cheat Sheet</h3><p> You don’t remember original vscode shortcuts? We have the Cheat Sheet (<a target="_blank" rel="noopener" href="https://go.microsoft.com/fwlink/?linkid=832143">macOS</a>, <a target="_blank" rel="noopener" href="https://go.microsoft.com/fwlink/?linkid=832145">Windows</a>, <a target="_blank" rel="noopener" href="https://go.microsoft.com/fwlink/?linkid=832144">Linux</a>)!</p>
+</li>
+</ol>
+
+                </div>
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/12/22/2016-22-12-funny-windows-bug/" data-toggle="tooltip" data-placement="top" title="Funny Windows bug when using Git Bash">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                
+                
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "lucax88x";
+    var disqus_identifier = "https://lucax88x.github.io/2017/01/04/2017-01-04-visual-studio-code-extension-tips/";
+    var disqus_url = "https://lucax88x.github.io/2017/01/04/2017-01-04-visual-studio-code-extension-tips/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:https://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/LucaTrazzi">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/luca.trazzi">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/lucax88x">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/luca-trazzi-93217931">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p>
+                    <q>Obstacles don’t have to stop you. If you run into a wall, don’t turn around and give up. Figure out how to climb it, go through it, or work around it.</q>
+                    <small>– Michael Jordan</small>
+                </p>
+                <p class="copyright text-muted">
+                    Copyright &copy; lucatrazzi 2024 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("https://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="https://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://lucax88x.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-87992294-1';
+    var _gaDomain = 'lucax88x.github.io';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+</body>
+
+</html>

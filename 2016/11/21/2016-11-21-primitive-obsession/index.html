@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Autofac And Primitive Obsession: How I Learned To Love The Injection Of Configuration Parameters
+        
+    </title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/favicons/manifest.json">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#404040">
+    <link rel="shortcut icon" href="/favicons/favicon.ico">
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    
+    <link rel="canonical" href="https://lucax88x.github.io/2016/11/21/2016-11-21-primitive-obsession/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->    
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">lucatrazzi</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/docs/Luca-Trazzi.pdf">CV</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/banner.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#C#" title="C#">C#</a>
+                        
+                          <a class="tag" href="/tags/#IoC" title="IoC">IoC</a>
+                        
+                          <a class="tag" href="/tags/#AutoFac" title="AutoFac">AutoFac</a>
+                        
+                    </div>
+                    <h1>Autofac And Primitive Obsession: How I Learned To Love The Injection Of Configuration Parameters</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by <a target="_blank" rel="noopener" href="https://arialdomartini.github.io">Arialdo Martini</a>, <a target="_blank" rel="noopener" href="https://github.com/lucax88x/">Luca Trazzi</a> on
+                        2016-11-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container post-white">
+
+                <div class="post">
+                    <p>Registering components in Autofac is straightforward, as long as no primitive dependencies (such as connection strings, URLs and configuration parameters in general) are involved.<br /><br>This post describes the strategy for dealing with primitive dependencies.</p>
+<span id="more"></span>
+<ul>
+<li><a href="#the-ordinary-case">The Ordinary Case</a>  </li>
+<li><a href="#here-come-the-primitives">Here Come The Primitives</a></li>
+<li><a href="#pain-points">Pain Points</a></li>
+<li><a href="#service-locator-is-the-wrong-solution">Service Locator Is The Wrong Solution</a></li>
+<li><a href="#overcoming-the-primitive-obsession">Overcoming The Primitive Obsession</a></li>
+<li><a href="#value-objects-in-action">Value Objects In Action</a></li>
+<li><a href="#implicit-and-explicit-cast-operators-to-the-rescue"><code>implicit</code> and <code>explicit</code> To The Rescue</a></li>
+<li><a href="#putting-it-all-together">Putting It All Together</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+<h2 id="The-Ordinary-Case"><a href="#The-Ordinary-Case" class="headerlink" title="The Ordinary Case"></a>The Ordinary Case</h2><p>Say you have a class <code>Foo</code> depending on <code>Bar</code>: </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">Bar bar</span>)</span> &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Bar</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Registering both of them<br>with Autofac is just simple as writing:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> builder = <span class="keyword">new</span> ContainerBuilder();</span><br><span class="line">builder.RegisterType&lt;Foo&gt;();</span><br><span class="line">builder.RegisterType&lt;Bar&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>This is enough for Autofac: since it knows how to create instances of <code>Bar</code> (it’s just a matter of invoking its default constructor), it also knows how to build instances of <code>Foo</code>.</p>
+<p>This works with no additional configurations even if dependencies are reversed (e.g <code>Bar</code> depends on <code>Foo</code>) or if relationships are implicit, for example when <code>Foo</code> depends on <code>Func&lt;Bar&gt;</code>, or on <code>List&lt;Bar&gt;</code> and the like: Autofac <a target="_blank" rel="noopener" href="http://docs.autofac.org/en/latest/resolve/relationships.html">is smart enough</a> to build an instance of the right class and inject it into the right component.</p>
+<h2 id="Here-Come-The-Primitives"><a href="#Here-Come-The-Primitives" class="headerlink" title="Here Come The Primitives"></a>Here Come The Primitives</h2><p>Troubles come when one of the dependencies is a primitive. Suppose that <code>Foo</code> also depends on a connection string, which you decided to represent as a <code>string</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">Bar bar, <span class="built_in">string</span> connectionString</span>)</span> &#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>You are offered a bunch of native Autofac facilities for registering this class.<br /><br>Either you can use a lambda:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">builder.Register(c =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> connectionString = <span class="string">&quot;someConnectionString&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> bar = c.Resolve&lt;Bar&gt;();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Foo(bar, connectionString);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>or you can continue using the ordinary <code>RegisterType&lt;&gt;()</code>, enhanced with the <code>withParameter()</code> facility:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">builder.RegisterType&lt;Foo&gt;()</span><br><span class="line">    .WithParameter(<span class="string">&quot;connectionString&quot;</span>, <span class="string">&quot;someConnectionString&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Pain-Points"><a href="#Pain-Points" class="headerlink" title="Pain Points"></a>Pain Points</h2><p>This is tollerable as long as there are just a very little number of primitive dependencies.<br /><br>It starts stinking when it ends up with code like the following:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">builder.Register(c =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> connectionString = <span class="string">&quot;someConnectionString&quot;</span>;</span><br><span class="line">    <span class="built_in">string</span> url = <span class="string">&quot;http://some.url&quot;</span>;</span><br><span class="line">    <span class="built_in">string</span> maxUsers = <span class="number">19</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> bar = c.Resolve&lt;Bar&gt;();</span><br><span class="line">    <span class="keyword">var</span> baz = c.Resolve&lt;Baz&gt;()</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Foo(bar, baz, connectionString, url, maxUsers);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>or</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">builder.RegisterType&lt;Foo&gt;()</span><br><span class="line">	.WithParameter(<span class="string">&quot;connectionString&quot;</span>, <span class="string">&quot;someConnectionString&quot;</span>)</span><br><span class="line">	.WithParameter(<span class="string">&quot;url&quot;</span>, <span class="string">&quot;http://some.url&quot;</span>)</span><br><span class="line">	.WithParameter(<span class="string">&quot;maxUsers&quot;</span>, <span class="number">19</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Not only is it verbose and repetitive, but the resulting code is also affected by a couple of problems:</p>
+<ul>
+<li>both the URL and the connection string are represented with the same class (a string), giving no chances to the compiler to know which is which; consequently, it is very possible to switch their values without giving the receiving class the opportunity to detect the issue but at runtime.<br /><br>Would you spot the problem in the following code?</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">Bar bar, Baz baz, <span class="built_in">string</span> connectionString, <span class="built_in">string</span> url, <span class="built_in">int</span> maxUsers</span>)</span> &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">builder.Register(c =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> bar = c.Resolve&lt;Bar&gt;();</span><br><span class="line">    <span class="keyword">var</span> baz = c.Resolve&lt;Baz&gt;()</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Foo(bar, baz, <span class="string">&quot;http://some.url&quot;</span>, <span class="string">&quot;someConnectionString&quot;</span>, <span class="number">19</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>The compiler wouldn’t, and that’s a pity;</p>
+<ul>
+<li><code>withParameter</code> references parameters by name, as a string, so simple refactoring tasks such as renaming variables become very fragile.<br /><br>The following code compiles, but it will throw an exception at runtime the moment you will try to resolve <code>Foo</code>:</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">Bar bar, Baz baz, <span class="built_in">string</span> connectionString, <span class="built_in">string</span> url, <span class="built_in">int</span> maxUsers</span>)</span> &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">builder.RegisterType&lt;Foo&gt;()</span><br><span class="line">	.WithParameter(<span class="string">&quot;connectionstring&quot;</span>, <span class="string">&quot;someConnectionString&quot;</span>)</span><br><span class="line">	.WithParameter(<span class="string">&quot;url&quot;</span>, <span class="string">&quot;http://some.url&quot;</span>)</span><br><span class="line">	.WithParameter(<span class="string">&quot;maxUsers&quot;</span>, <span class="number">19</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Yes, it’s just a matter of a capitalized <code>S</code>. Hard to spot, isn’t it?</p>
+<p>The bad habit of using primitive types to represent domain ideas is a smell called <a target="_blank" rel="noopener" href="https://sourcemaking.com/refactoring/smells/primitive-obsession">Primitive Obsession</a>.<br /><br>Let’s see how to avoid it without endng up with ugly Autofac registration statements.</p>
+<h2 id="Service-Locator-Is-The-Wrong-Solution"><a href="#Service-Locator-Is-The-Wrong-Solution" class="headerlink" title="Service Locator Is The Wrong Solution"></a>Service Locator Is The Wrong Solution</h2><p>Why do you need configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably by using a configuration file:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> connectionString = ConfigurationManager.AppSetting[<span class="string">&quot;myConnection&quot;</span>];</span><br><span class="line"></span><br><span class="line">builder.Register(c =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> bar = c.Resolve&lt;Bar&gt;();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Foo(bar, connectionString);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>This may suggest you a trick you could be tempted to use: to directly inject <code>ConfigurationManager.AppSetting</code> into your classes:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">Bar bar, NameValueCollection config</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> connectionString = config[<span class="string">&quot;myConnection&quot;</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">builder.RegisterType&lt;Foo&gt;();</span><br><span class="line">builder.RegisterInstance(ConfigurationManager.AppSetting).As&lt;NameValueCollection&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>Voilà. No more primitives!<br /><br>You could even be inclined to define a custom service for collecting all of your configuration parameters:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">MyConfigs</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">Get</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="built_in">string</span> key</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LoadFromConfigfile</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">builder.RegisterType&lt;Foo&gt;();</span><br><span class="line">builder.RegisterInstance(<span class="keyword">new</span> MyConfig().LoadFromConfigfile());</span><br></pre></td></tr></table></figure>
+
+<p>so that you can easily inject it, as a glorified configuration parameters repository:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    Foo(Bar bar, MyConfigs conf)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> maxUsers = conf.Get&lt;<span class="built_in">int</span>&gt;(<span class="string">&quot;maxUsers&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This seems to solve most of the problems related to Primitive Obsession, right?</p>
+<p>Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it was supposed to solve.</p>
+<p>The problem is: that’s a Service Locator.<br /><br>I strongly suggest you to read the seminal Mark Seemann’s post <a target="_blank" rel="noopener" href="http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/">Service Locator Is An Anti-Pattern</a> which collects a lot of strong arguments on why you should avoid using the Service Locator pattern. Basically, the root of Service Locator’s evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.</p>
+<p>Service Locator pattern is mostly related to services, while here you are dealing with values without behaviour, simple strings and integers; yet Mark Seemann’s argument apply: injecting a configuration-parameters locator is an anti-pattern anyway.<br /></p>
+<p><strong>Just don’t do it.</strong></p>
+<h2 id="Overcoming-The-Primitive-Obsession"><a href="#Overcoming-The-Primitive-Obsession" class="headerlink" title="Overcoming The Primitive Obsession"></a>Overcoming The Primitive Obsession</h2><p>Let me try to convince you that there is something deeply wrong with injecting a primitive.<br /><br>Say you have 2 configuration parameters: <code>maxUsers</code> and <code>numerOfItemsPerPage</code>. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share.<br /><br>Yet you can represent both of them with the same type, <code>int</code>.</p>
+<p>That’s the root error: when you use the very same class for 2 completely different purposes, it’s just like collapsing <code>CustomerController</code> and <code>NHibernateSession</code> to a single class: by doing so, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.</p>
+<p>It’s easy to see why representing the customer controller and the NHibernate session with 2 dedicated classes is valuable: it isn’t hard to see that the idea can be profitably applied to <code>maxUsers</code> and <code>numerOfItemsPerPage</code> well, and in general to any primitive configuration parameter. It would give you the opportunity the rely on the compiler: instead of having a constructor which takes 3 indistinguishable integers:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params"><span class="built_in">int</span> maxDownloads, <span class="built_in">int</span> itemsPerPage, <span class="built_in">int</span> numberOfDays</span>)</span> &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>you would actually have 3 distinct parameters, each well defined with its specific class, just like all the other domain ideas:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">MaxDownloads maxDownloads, ItemsPerPage itemsPerPage, NumberOfDays numberOfDays</span>)</span> &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>So, the basic trick for dealing with primitives in Autofac is: <strong>don’t use primitives</strong>. Just represent your configuration parameters with non-primitive types.</p>
+<h2 id="Value-Objects-In-Action"><a href="#Value-Objects-In-Action" class="headerlink" title="Value Objects In Action"></a>Value Objects In Action</h2><p>Ok. Sounds simple.<br /><br>So, instead of declaring <code>maxUsers</code> and <code>numberOfItemsPerPage</code> as <code>int</code>, all you have to do is to define 2 separate non-primitive types inheriting from <code>int</code>:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">MaxUsers</span> : <span class="title">int</span> &#123;&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">NumerOfItemsPerPage</span> : <span class="title">int</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Unfortunately, this is not allowed in C#, since primitive types are sealed.<br /></p>
+<p><img src="static/img/sealedclass.png" alt="primitives are sealed classes"></p>
+<p>You definitely have to resort on a workaround: use a DTO as a wrapper of the primitive value.<br /></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">MaxUsers</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MaxUsers</span>(<span class="params"><span class="built_in">int</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Value = <span class="keyword">value</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Think about it: isn’t it exactly what you are already used to do, when dealing with compound configuration parameters? For example, chances are you had the need to inject into an instance the url, the username and the password for accessing a web service, and you decided to group them into a single DTO:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">BarServiceAuthParameters</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Url &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Username &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> AccessToken &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BarServiceAuthParameters</span>(<span class="params"><span class="built_in">string</span> url, <span class="built_in">string</span> username, <span class="built_in">string</span> accessToken</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Url = url;</span><br><span class="line">        Username = username;</span><br><span class="line">        AccessToken = accessToken;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Wasn’t it easy to inject, since it’s an ordinary class?<br /><br>The trick is: use the same strategy also when dealing with single primitive values.</p>
+<p>In the the very short post <a target="_blank" rel="noopener" href="http://wiki.c2.com/?PrimitiveObsession">Primitive Obsession</a> J.B. Rainsberger claims those kind of <a target="_blank" rel="noopener" href="http://martinfowler.com/bliki/ValueObject.html">Value Object</a></p>
+<blockquote>
+<p>[…] become “attractive code”, meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.</p>
+</blockquote>
+<p>So, it’s likely that just by introducing a class for representing an URL or a connection string you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive <code>string</code>.</p>
+<p>Unfortunately, this solution has got it’s drawbacks too. Now it’s just more difficult to consume the <code>ConnectionString</code>. You need to write:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connectionString.Value</span><br></pre></td></tr></table></figure>
+
+<p>instead of</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connectionString</span><br></pre></td></tr></table></figure>
+
+<p>since it’s not a string anymore.<br /><br>It’s also more difficult to assign it a value. Instead of</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> connectionString = <span class="string">&quot;foobar&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>you need</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> connectionString = <span class="keyword">new</span> ConnectionString(<span class="string">&quot;foobar&quot;</span>); </span><br></pre></td></tr></table></figure>
+
+<p>That’s bad.<br /></p>
+<h2 id="implicit-and-explicit-Cast-Operators-To-The-Rescue"><a href="#implicit-and-explicit-Cast-Operators-To-The-Rescue" class="headerlink" title="implicit and explicit Cast Operators To The Rescue"></a><code>implicit</code> and <code>explicit</code> Cast Operators To The Rescue</h2><p>Let’s see what you can do in order to make that Value Object resemble a primitive.</p>
+<p>It would be nice if it were possible to implicitly cast it from and to <code>string</code>.<br /><br>Actually, that’s not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post <a target="_blank" rel="noopener" href="https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession">Dealing with primitive obsession</a> that  makes a smart use of the cast operators <code>implicit</code> and <code>explicit</code> and allows to make you consume and create your Value Objects as they are primitives.</p>
+<p>Go and read the post. You will learn that by defining your Value Object as</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ConnectionString</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Value &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConnectionString</span>(<span class="params"><span class="built_in">string</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Value = <span class="keyword">value</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">implicit</span> <span class="keyword">operator</span> <span class="title">string</span>(<span class="params">ConnectionString connectionString</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> connectionString.Value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">implicit</span> <span class="keyword">operator</span> <span class="title">ConnectionString</span>(<span class="params"><span class="built_in">string</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ConnectionString(<span class="keyword">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>you will get the benefit to consuming and creating it as a primitive, as in the following example:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> ConnectionString Conn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = <span class="keyword">new</span> Foo();</span><br><span class="line">foo.Conn = <span class="string">&quot;barbaz&quot;</span>;        <span class="comment">// implicitly converts from string to ConnectionString</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> s = foo.Conn;        <span class="comment">// implicitly converts from ConnectionString to string </span></span><br><span class="line"><span class="keyword">var</span> z = (<span class="built_in">string</span>) foo.Conn;  <span class="comment">// explicit conversion works as well</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Putting-It-All-Together"><a href="#Putting-It-All-Together" class="headerlink" title="Putting It All Together"></a>Putting It All Together</h2><p>Once you define all your configuration parameters as Value Objects (with the <code>implicit</code> trick), you can use them like the following:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Foo</span>(<span class="params">Bar bar, URL url, ConnectionString conn</span>)</span> &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> builder = <span class="keyword">new</span> ContainerBuilder();</span><br><span class="line">builder.RegisterType&lt;Bar&gt;();</span><br><span class="line">builder.RegisterType&lt;Foo&gt;();</span><br><span class="line"></span><br><span class="line">builder.RegisterInstance((URL) <span class="string">&quot;http://some.url&quot;</span>);</span><br><span class="line">builder.RegisterInstance((ConnectionString) <span class="string">&quot;some connection string&quot;</span>);</span><br><span class="line">builder.RegisterInstance((MaxdownloadableFiles) <span class="number">180</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// builder.RegisterInstance(&quot;some connection string&quot;).As&lt;ConnectionString&gt;(); // this doesn&#x27;t work</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Luca’s GitHub hosta a <a target="_blank" rel="noopener" href="https://github.com/lucax88x/PrimitiveObsession/tree/master/src">sample project</a> leveraging this technique.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><ul>
+<li>Don’t use primitives. Use Value Objects;</li>
+<li>Avoid using the Service Locator pattern: it’s bad;</li>
+<li>Define Value Objects wrapping your configurations, using the <code>implicit</code> cast operator to make them behave as a primitive;</li>
+<li>Register them with <code>RegisterInstance()</code>.</li>
+</ul>
+<p>You will get:</p>
+<ul>
+<li>easy and straightforward Autofac register statements, without using lambdas or <code>withParameter()</code>;</li>
+<li>static compile time type checking on injected parameters (no more dependencies neither on parameters order nor on parameters names);</li>
+<li>easier refactoring, you can easily rename parameters or change the order of them, without breaking anything;</li>
+<li>all the advantages of using Value Objects, including the possibility to validate the primitive value;</li>
+<li>the above solution can used also for collection of primitives or classes, such as <code>List&lt;string&gt;</code>.</li>
+</ul>
+<p>(<a target="_blank" rel="noopener" href="https://github.com/lucax88x/PrimitiveObsession/blob/master/README.md">Post repository</a> on Luca Trazzi’s Github)</p>
+
+                </div>
+
+                <hr>
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/12/22/2016-22-12-funny-windows-bug/" data-toggle="tooltip" data-placement="top" title="Funny Windows bug when using Git Bash">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                </ul>
+                
+
+                
+                
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "lucax88x";
+    var disqus_identifier = "https://lucax88x.github.io/2016/11/21/2016-11-21-primitive-obsession/";
+    var disqus_url = "https://lucax88x.github.io/2016/11/21/2016-11-21-primitive-obsession/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:https://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/LucaTrazzi">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/luca.trazzi">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/lucax88x">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/luca-trazzi-93217931">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p>
+                    <q>Obstacles don’t have to stop you. If you run into a wall, don’t turn around and give up. Figure out how to climb it, go through it, or work around it.</q>
+                    <small>– Michael Jordan</small>
+                </p>
+                <p class="copyright text-muted">
+                    Copyright &copy; lucatrazzi 2024 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("https://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="https://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://lucax88x.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-87992294-1';
+    var _gaDomain = 'lucax88x.github.io';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+</body>
+
+</html>
